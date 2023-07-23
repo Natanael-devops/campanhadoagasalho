@@ -5,7 +5,7 @@ FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
 
 # Copia o arquivo pom.xml primeiro para aproveitar o cache do Maven
-COPY src/main/java/pom.xml .
+COPY pom.xml .
 
 # Baixa as dependências do Maven (apenas as dependências, não o código-fonte ainda)
 RUN mvn dependency:go-offline
