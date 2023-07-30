@@ -7,14 +7,11 @@ WORKDIR /app
 # Copia o arquivo pom.xml primeiro para aproveitar o cache do Maven
 COPY pom.xml .
 
-# Baixa as dependências do Maven (apenas as dependências, não o código-fonte ainda)
-RUN mvn dependency:go-offline
-
 # Copia o código-fonte do projeto
-COPY src/main ./src
+COPY src ./src
 
 # Compila e empacota o projeto usando o Maven
-RUN mvn package
+RUN mvn clean package -DskipTests
 
 # Etapa de execução
 FROM openjdk:17-jdk
