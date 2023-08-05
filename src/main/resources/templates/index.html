@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title>Campanha do Agasalho</title>
+  <style>
+    body {
+      padding-top: 80px; /* Para compensar a altura da barra de navegação */
+    }
+  </style>
+  <link rel="stylesheet" href="../static/css/estilo.css">
+</head>
+<body>
+  <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary" style="z-index: 999;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Sobre</a>
+          </li>
+          <li>
+            <a class="nav-link active" aria-current="page" href="#">Contato</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-header" style="color: #47b5ed; font-weight: bold; font-size: 1.2em;">
+        <img src="../static/img/logo.png" alt="" style="height: 80px; width: auto;">
+        AQUEÇA VIDAS
+      </div>
+      <div class="card-body">
+        <h5 class="card-title" style="font-size: 4.6em; text-align: center; font-weight: bold; color: #e43f3f; padding-top: 15%;">AQUEÇA UMA VIDA, DOE UM AGASALHO</h5>
+        <p class="card-text" style="text-align: center;">"Aqueça Vidas: Aquecendo corações, iluminando vidas. Somos um projeto dedicado a espalhar o calor da solidariedade, unindo comunidades para fazer do inverno uma estação de amor e esperança."</p>
+        <div class="d-flex justify-content-center align-items-center">
+          <a href="#" class="btn btn-primary" style="margin: 5px; font-weight: bold;">QUERO DOAR</a>
+          <a href="/cadastrar" class="btn btn-primary" style="font-weight: bold;">SOU UM VOLUNTÁRIO</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Contador-->
+  <div class="counter-container">
+    <div class="counter">
+      <span id="currentCount">0</span>
+      <span class="counter-label">Itens doados</span>
+    </div>
+    <div class="counter-message">
+      <span id="message"></span>
+    </div>
+  </div>
+
+  <!-- Elementos para exibir os dados das doações -->
+  <div class="container mt-5">
+    <h2>Itens doados:</h2>
+    <ul id="doacoesList"></ul>
+  </div>
+
+  <!-- Elementos para exibir os dados dos pontos de coleta -->
+  <div class="container mt-5">
+    <h2>Pontos de Coleta:</h2>
+    <ul id="pontosList"></ul>
+  </div>
+
+  <script src="../static/js/main.js"></script>
+</body>
+</html>

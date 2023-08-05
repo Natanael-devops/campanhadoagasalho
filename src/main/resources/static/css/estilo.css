@@ -1,0 +1,25 @@
+/* Estilos para o contador */
+.counter-container {
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  .counter {
+    font-size: 2em;
+    font-weight: bold;
+    color: #e43f3f;
+    display: inline-block;
+  }
+  
+  .counter-label {
+    display: block;
+    font-size: 0.6em;
+  }
+  
+  .counter-message {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 20px;
+    display: none;
+  }
+  
