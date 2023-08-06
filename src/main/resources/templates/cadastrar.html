@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
       padding-top: 80px; /* Para compensar a altura da barra de navegação */
     }
   </style>
-  <link rel="stylesheet" href="../static/css/estilo.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/estilo.css}">
 </head>
 <body>
   <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary" style="z-index: 999;">
@@ -35,7 +35,7 @@
   <div class="container mt-5">
     <div class="card">
       <div class="card-header" style="color: #47b5ed; font-weight: bold; font-size: 1.2em;">
-        <img src="../static/img/logo.png" alt="" style="height: 80px; width: auto;">
+        <img th:src="@{/img/logo.png}" alt="" style="height: 80px; width: auto;">
         AQUEÇA VIDAS - página de ações
       </div>
       <div class="card-body">
@@ -61,7 +61,7 @@
     </div>
   </div>
 
-  <script src="../static/js/cadastro.js"></script>
+  <script th:src="@{/js/main.js}"></script>
   <script src="https://kit.fontawesome.com/d0d03ade6f.js" crossorigin="anonymous"></script>
 </body>
 </html>
