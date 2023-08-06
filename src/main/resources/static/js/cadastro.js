@@ -3,7 +3,7 @@ async function carregarDadosDoacoes() {
   
 
     try {
-      const response = await fetch('/api/doacoes');
+      const response = await fetch('/');
       if (!response.ok) {
         throw new Error('Falha ao carregar os dados das doações.');
       }
