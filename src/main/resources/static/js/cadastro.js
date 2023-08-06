@@ -349,7 +349,7 @@ async function carregarDadosDoacoes() {
     }
   
     function enviarFormulario(dadosDoFormulario) {
-      const endpoint = '/api/cadastrar';
+      const endpoint = '/api/doacoes';
   
       fetch(endpoint, {
         method: 'POST',
