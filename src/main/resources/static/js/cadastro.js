@@ -115,7 +115,7 @@ async function carregarDadosDoacoes() {
       const formulario = document.createElement('form');
       
   
-      formulario.setAttribute('action', '');
+      formulario.setAttribute('action', '/api/doacoes');
       formulario.setAttribute('id', 'idFormulario')
       formulario.setAttribute('method', 'post');
   
