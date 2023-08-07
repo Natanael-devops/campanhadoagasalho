@@ -16,7 +16,7 @@
 <body>
   <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary" style="z-index: 999;">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Home</a>
+      <a class="navbar-brand" href="/">Home</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -53,7 +53,7 @@
 <!-- Contador-->
   <div class="counter-container">
     <div class="counter">
-      <span id="currentCount">0</span>
+      <span id="currentCount"></span>
       <span class="counter-label">Itens doados</span>
     </div>
     <div class="counter-message">
@@ -74,5 +74,8 @@
   </div>
 
   <script th:src="@{/js/main.js}"></script>
+  <script>
+    atualizarQuantidadeItensDoados();
+  </script>
 </body>
 </html>

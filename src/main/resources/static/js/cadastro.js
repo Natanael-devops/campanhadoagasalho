@@ -3,7 +3,7 @@ async function carregarDadosDoacoes() {
   
 
     try {
-      const response = await fetch('/');
+      const response = await fetch('/api/doacoes');
       if (!response.ok) {
         throw new Error('Falha ao carregar os dados das doações.');
       }
@@ -39,6 +39,7 @@ async function carregarDadosDoacoes() {
       const editarButton = document.createElement('button');
       editarButton.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
       editarButton.addEventListener('click', () => {
+        console.log('Botão de editar clicado com ID:', doacao.id); // Verificação no console
         editarDoacao(doacao.id);
       });
       celulaEditar.appendChild(editarButton);
@@ -52,24 +53,182 @@ async function carregarDadosDoacoes() {
       celulaExcluir.appendChild(excluirButton);
     }
   }
+
   
   function editarDoacao(id) {
-    // Fazer a requisição PUT para a API usando o ID fornecido
+    // Fazer a requisição GET para a API usando o ID fornecido para obter os dados da doação
     const url = `/api/doacoes/${id}`;
-    // Seu código para enviar a requisição PUT...
+    
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Erro ao carregar os dados da doação.');
+        }
+        return response.json();
+      })
+      .then((doacao) => {
+        // Exibir o formulário de edição
+        const formulario = document.createElement('form');
+        formulario.setAttribute('action', '');
+        formulario.setAttribute('id', 'idFormulario');
+
+        const titulo = document.createElement('h5');
+        titulo.innerText = 'Preencha os campos com os dados corretos:';
+        formulario.appendChild(titulo);
+    
+        // Criar campos de edição com os dados da doação
+        const inputTipo = document.createElement('input');
+        inputTipo.setAttribute('type', 'text');
+        inputTipo.setAttribute('id', 'inputTipo');
+        inputTipo.setAttribute('value', doacao.tipo);
+        formulario.appendChild(inputTipo);
+    
+        const inputTamanho = document.createElement('input');
+        inputTamanho.setAttribute('type', 'text');
+        inputTamanho.setAttribute('id', 'inputTamanho');
+        inputTamanho.setAttribute('value', doacao.tamanho);
+        formulario.appendChild(inputTamanho);
+    
+        const inputGenero = document.createElement('input');
+        inputGenero.setAttribute('type', 'text');
+        inputGenero.setAttribute('id', 'inputGenero');
+        inputGenero.setAttribute('value', doacao.genero);
+        formulario.appendChild(inputGenero);
+    
+        // Criação dos botões de enviar e cancelar
+        const botaoEnviar = document.createElement('button');
+        botaoEnviar.setAttribute('class', 'btn btn-primary');
+        botaoEnviar.setAttribute('type', 'submit');
+        botaoEnviar.setAttribute('style', 'font-weight: bold; margin: 10px');
+        botaoEnviar.innerText = 'ENVIAR';
+        formulario.appendChild(botaoEnviar);
+    
+        const botaoCancelar = document.createElement('button');
+        botaoCancelar.setAttribute('class', 'btn btn-danger btn-primary');
+        botaoCancelar.setAttribute('type', 'button');
+        botaoCancelar.setAttribute('style', 'font-weight: bold; margin: 10px');
+        botaoCancelar.innerText = 'CANCELAR';
+        botaoCancelar.addEventListener('click', fecharFormulario);
+        formulario.appendChild(botaoCancelar);
+    
+        // Adicionar o formulário à página
+        const divisao = document.querySelector('.form-check');
+        divisao.innerHTML = '';
+        divisao.appendChild(formulario);
+        formulario.scrollIntoView({ behavior: 'smooth' });
+    
+        // Evento de envio do formulário
+        formulario.addEventListener('submit', function (event) {
+          event.preventDefault(); // Evita que a página seja recarregada após o envio do formulário
+    
+          // Obtém os valores dos campos do formulário
+          const tipo = inputTipo.value;
+          const tamanho = inputTamanho.value;
+          const genero = inputGenero.value;
+    
+          // Cria o objeto de atualização com os dados editados
+          const dadosAtualizados = {
+            tipo: tipo,
+            tamanho: tamanho,
+            genero: genero,
+          };
+    
+          // Enviar requisição PUT para o servidor
+          const urlAtualizacao = `/api/doacoes/${id}`;
+          fetch(urlAtualizacao, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosAtualizados),
+          })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Erro ao atualizar a doação.');
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log('Doação atualizada com sucesso:', data);
+            fecharFormulario();
+            popularTabelaDoacoes(); // Atualiza a tabela com os novos dados após a edição
+            // Limpa a mensagem de erro, caso exista
+            const mensagemErro = document.querySelector('.mensagemErro');
+            mensagemErro.innerText = '';
+          })
+          .catch((error) => {
+            console.error('Erro ao atualizar a doação:', error.message);
+            // Exibe a mensagem de erro no elemento com a classe 'mensagemErro'
+            const mensagemErro = document.querySelector('.mensagemErro');
+            if (mensagemErro) {
+              mensagemErro.innerText = error.message;
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        console.error('Erro ao carregar os dados da doação:', error);
+        // Exibe a mensagem de erro no elemento com a classe 'mensagemErro'
+        const mensagemErro = document.querySelector('.mensagemErro');
+        if (mensagemErro) {
+          mensagemErro.innerText = 'Erro ao carregar os dados da doação.';
+        }
+      });
   }
   
-  function excluirDoacao(id) {
-    // Fazer a requisição DELETE para a API usando o ID fornecido
-    const url = `/api/doacoes/${id}`;
-    // Seu código para enviar a requisição DELETE...
+  
+  async function excluirDoacao(id) {
+    try {
+      // Exibir o alerta de confirmação
+      const confirmacao = window.confirm('Tem certeza de que deseja excluir esta doação?');
+  
+      // Se o usuário confirmar a exclusão, enviar a requisição DELETE
+      if (confirmacao) {
+        const url = `/api/doacoes/${id}`;
+  
+        // Enviar a requisição DELETE usando fetch
+        const response = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        // Verificar se a resposta foi bem-sucedida (código 200-299)
+        if (response.ok) {
+          console.log(`Doação com ID ${id} excluída com sucesso.`);
+          divMensagem = document.querySelector('.mensagemSucesso');
+          divMensagem.innerText = 'Doação excluída com sucesso! '
+          // Atualizar a tabela de doações após a exclusão
+          popularTabelaDoacoes();
+        } else {
+          // Se a resposta não foi bem-sucedida, lançar um erro
+          throw new Error('Erro ao excluir a doação.');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao excluir a doação:', error.message);
+    }
   }
+  
   
   // Chamar a função para popular a tabela com os dados das doações ao carregar a página
   popularTabelaDoacoes();
+
+  
   
   
   //------------------------------------------------------------------------------------------------------
+
+
+  function fecharFormulario() {
+    const formulario = document.getElementById('idFormulario');
+    formulario.remove(); // Remove o formulário da página
+  
+    // Mostra novamente o botão de cadastrar
+    const botaoCadastrar = document.getElementById('novoItemButton');
+    botaoCadastrar.style.display = 'block';
+  }
   
     function criarInput(input, classe, nome, valor) {
       input.setAttribute('type', 'radio');
@@ -88,6 +247,8 @@ async function carregarDadosDoacoes() {
       label.innerText = texto
       return label
     }
+
+
     //criei essa função pois estava repetindo muito código criando listeners para o formulário.
     function verificarChecked(input, form, div, div2, div3) {
       input.addEventListener('change', function(){
@@ -115,9 +276,8 @@ async function carregarDadosDoacoes() {
       const formulario = document.createElement('form');
       
   
-      formulario.setAttribute('action', '/api/doacoes');
-      formulario.setAttribute('id', 'idFormulario')
-      formulario.setAttribute('method', 'post');
+      formulario.setAttribute('action', '');
+      formulario.setAttribute('id', 'idFormulario');
   
       const div1 = document.createElement('div');
   
@@ -160,8 +320,8 @@ async function carregarDadosDoacoes() {
   
       //calça
       const inputCalca = document.createElement('input');
-      criarInput(inputCalca, 'btn-check', 'options-base', 'Calca/Bermuda')
-      const labelCalça = criarLabel('btn','Calca/Bermuda', 'Calça/Bermuda');
+      criarInput(inputCalca, 'btn-check', 'options-base', 'Calça/Bermuda')
+      const labelCalça = criarLabel('btn','Calça/Bermuda', 'Calça/Bermuda');
       div1.appendChild(inputCalca);
       div1.appendChild(labelCalça);
   
@@ -205,6 +365,7 @@ async function carregarDadosDoacoes() {
       //m
       const inputM = document.createElement('input');
       criarInput(inputM, 'btn-check', 'tamanho', 'M');
+      inputM.setAttribute('checked', 'checked')
       const labelM = criarLabel('btn', 'M', 'M');
       divTamanhoGenerico.appendChild(inputM);
       divTamanhoGenerico.appendChild(labelM);
@@ -285,6 +446,7 @@ async function carregarDadosDoacoes() {
   
       const inputFem = document.createElement('input');
       criarInput(inputFem, 'btn-check', 'genero', 'Feminino');
+      inputFem.setAttribute('checked', 'checked')
       const labelFem = criarLabel('btn', 'Feminino', 'Feminino');
       divGenero.appendChild(inputFem);
       divGenero.appendChild(labelFem);
@@ -300,23 +462,39 @@ async function carregarDadosDoacoes() {
       formulario.appendChild(divTamanhoGenerico);
       formulario.appendChild(divGenero);
   
+      const divBotoes = document.createElement('div'); // Cria a div para os botões
+
+      const botaoEnviar = document.createElement('button');
+      botaoEnviar.setAttribute('class', 'btn btn-primary');
+      botaoEnviar.setAttribute('type', 'submit');
+      botaoEnviar.setAttribute('style', 'font-weight: bold; margin: 10px');
+      botaoEnviar.innerText = 'ENVIAR';
+    
+      const botaoCancelar = document.createElement('button');
+      botaoCancelar.setAttribute('class', 'btn btn-danger btn-primary');
+      botaoCancelar.setAttribute('type', 'button'); // O tipo do botão deve ser "button" para evitar o envio do formulário
+      botaoCancelar.setAttribute('style', 'font-weight: bold; margin: 10px');
+      botaoCancelar.innerText = 'CANCELAR';
+      botaoCancelar.addEventListener('click', fecharFormulario);
+    
+      divBotoes.appendChild(botaoEnviar);
+      divBotoes.appendChild(botaoCancelar);
+    
+       
+
+
+
       verificarChecked(inputCobertor, formulario, divTamanhoCobertor, divTamanhoCalcado, divTamanhoGenerico);
       verificarChecked(inputCalcado, formulario, divTamanhoCalcado, divTamanhoCobertor, divTamanhoGenerico);
       verificarChecked(inputCamisa, formulario, divTamanhoGenerico, divTamanhoCalcado, divTamanhoCobertor);
       verificarChecked(inputCalca, formulario, divTamanhoGenerico, divTamanhoCalcado, divTamanhoCobertor);
       verificarChecked(inputCasaco, formulario, divTamanhoGenerico, divTamanhoCalcado, divTamanhoCobertor);
-  
-      const botaoEnviar = document.createElement('button');
-      botaoEnviar.setAttribute('class', 'btn btn-primary');
-      botaoEnviar.setAttribute('type', 'submit');
-      botaoEnviar.setAttribute('style', 'font-weight: bold;');
-      botaoEnviar.innerText = 'ENVIAR'
       
   
   
       const divisao = document.querySelector('.form-check');
       divisao.innerHTML = '';
-      formulario.appendChild(botaoEnviar);
+      formulario.appendChild(divBotoes);
       divisao.appendChild(formulario);
       formulario.scrollIntoView({ behavior: 'smooth' });
        const botaoCadastrar = document.getElementById('novoItemButton')
@@ -337,8 +515,8 @@ async function carregarDadosDoacoes() {
         genero: formData.get('genero'),
       };
   
-      enviarFormulario(dadosDoFormulario);
-    });
+      enviarFormulario(dadosDoFormulario); // Enviar os dados para a função responsável por cadastrar a doação no servidor
+  });
   
     //próximos passos: resolver a olítica do cors (tentando incrementar direto no repositorio do back end o front end), testar o botão de cadastro e terminar os botões editar e excluir.
   
@@ -348,11 +526,12 @@ async function carregarDadosDoacoes() {
   
     }
   
-    function enviarFormulario(dadosDoFormulario) {
-      const endpoint = '/api/doacoes';
-  
+    function enviarFormulario(dadosDoFormulario, doacaoParaEditar = null) {
+      const endpoint = doacaoParaEditar ? `/api/doacoes/${doacaoParaEditar.id}` : '/api/doacoes';
+      const method = doacaoParaEditar ? 'PUT' : 'POST';
+    
       fetch(endpoint, {
-        method: 'POST',
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -360,9 +539,8 @@ async function carregarDadosDoacoes() {
       })
         .then((response) => {
           if (!response.ok) {
-            throw new Error('Ocorreu um erro ao enviar o formulário.');
+            throw new Error('Ocorreu um erro ao enviar o formulário. Por favor, tente novamente mais tarde.');
           }
-          // Verifica se o corpo da resposta não está vazio
           if (response.headers.get('content-length') === '0') {
             throw new Error('Resposta vazia do servidor.');
           }
@@ -370,14 +548,25 @@ async function carregarDadosDoacoes() {
         })
         .then((data) => {
           console.log('Dados enviados com sucesso:', data);
-          // Aqui você pode realizar outras ações após o envio bem-sucedido, como exibir uma mensagem de sucesso ou redirecionar para outra página.
-          popularTabelaDoacoes(); // Atualiza a tabela com os novos dados após o cadastro
+          divMensagem = document.querySelector('.mensagemSucesso');
+          divMensagem.innerText = 'Dados enviados com sucesso! ' + data.tipo + ', ' + data.tamanho + ', ' + data.genero + ' ' + '.';
+          popularTabelaDoacoes();
+          fecharFormulario();
+    
+          // Limpa a mensagem de erro, caso exista
+          const mensagemErro = document.querySelector('.mensagemErro');
+          mensagemErro.innerText = '';
         })
         .catch((error) => {
           console.error('Erro ao enviar o formulário:', error.message);
-          // Aqui você pode tratar o erro, exibir uma mensagem de erro para o usuário, etc.
+          // Exibe a mensagem de erro no elemento com a classe 'mensagemErro'
+          const mensagemErro = document.querySelector('.mensagemErro');
+          if (mensagemErro) {
+            mensagemErro.innerText = error.message;
+          }
         });
     }
+    
   
   
     // Chamar a função para popular a tabela com os dados das doações ao carregar a página
