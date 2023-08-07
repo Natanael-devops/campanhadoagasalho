@@ -28,8 +28,14 @@ public class ItemDoacaoController {
 
     @GetMapping
     @ResponseBody
-    public List<ItemDoacao> consultarItens() {
-        return itemDoacaoService.ConsultarItens();
+    public ResponseEntity<?> consultarItens() {
+        try {
+            List<ItemDoacao> lista = itemDoacaoService.ConsultarItens();
+            return ResponseEntity.ok(lista);
+        }
+        catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping
